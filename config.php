@@ -2,12 +2,13 @@
 /**
  * Database Configuration File
  * GovTrackr Web Application
- */
+ 
+*/
 
 // Database credentials
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');          // Change this to your database username
-define('DB_PASS', '');              // Change this to your database password
+define('DB_USER', 'root');          // Change if needed
+define('DB_PASS', '');              // Change if needed
 define('DB_NAME', 'govtrackr');
 
 // Create database connection

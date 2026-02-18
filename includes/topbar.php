@@ -4,6 +4,11 @@ $userName  = $_SESSION['user_name'] ?? 'Student';
 $userId    = $_SESSION['student_number']   ?? '';
 $userPic   = $_SESSION['profile_pic'] ?? '';
 ?>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kodchasan:wght@400;600&display=swap" rel="stylesheet">
+</head>
 <header class="topbar">
     <div class="topbar-left">
         <p class="topbar-welcome">Welcome to <span class="brand-gov">Gov</span><span class="brand-trackr">Trackr</span></p>
@@ -11,7 +16,7 @@ $userPic   = $_SESSION['profile_pic'] ?? '';
     </div>
     <div class="topbar-right">
         <form method="GET" action="/govtrackr/candidates.php" class="search-form">
-            <input type="text" name="search" placeholder="🔍 Search candidates..."
+            <input type="text" name="search" placeholder="Search candidates..."
                    class="search-input" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
         </form>
         <a href="/govtrackr/profile.php" class="user-chip">

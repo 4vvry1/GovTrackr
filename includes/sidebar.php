@@ -12,6 +12,11 @@ $pages = [
 ];
 $active = $activePage ?? '';
 ?>
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kodchasan:wght@400;600&display=swap" rel="stylesheet">
+</head>
 <aside class="sidebar">
     <div class="sidebar-brand">
         <span class="brand-gov">Gov</span><span class="brand-trackr">Trackr</span>

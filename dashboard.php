@@ -113,7 +113,7 @@ $voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = {$_SESSI
             <!-- Recent candidates -->
             <div class="card">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                    <h3 class="card-title" style="margin:0">Recent Candidates</h3>
+                    <h3 class="card-title" style="margin:0">Recently Filed Candidates</h3>
                     <a href="candidates.php" class="btn btn-outline btn-sm">View All →</a>
                 </div>
                 <div class="mini-cand-row">

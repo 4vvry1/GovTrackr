@@ -48,14 +48,14 @@ $events    = $conn->query("SELECT * FROM events ORDER BY event_date ASC");
 <div style="flex:1;display:flex;flex-direction:column;">
 <header class="topbar">
     <div class="topbar-left"><p class="topbar-welcome">Admin Panel</p><h1 class="topbar-title">Events</h1></div>
-    <div class="topbar-right"><a href="events.php?action=add" class="btn btn-gold">➕ Add Event</a></div>
+    <div class="topbar-right"><a href="events.php?action=add" class="btn btn-gold">Add Event</a></div>
 </header>
 <main class="dash-content">
     <?php if ($message): ?><div class="alert alert-<?= $msg_type === 'success' ? 'success' : 'error' ?>"><?= htmlspecialchars($message) ?></div><?php endif; ?>
 
     <?php if ($show_form): ?>
     <div class="card" style="max-width:580px;">
-        <h3 class="card-title"><?= $edit_ev ? '✏️ Edit Event' : '➕ Add Event' ?></h3>
+        <h3 class="card-title"><?= $edit_ev ? 'Edit Event' : 'Add Event' ?></h3>
         <form method="POST" action="">
             <input type="hidden" name="action" value="<?= $edit_ev ? 'edit' : 'add' ?>">
             <?php if ($edit_ev): ?><input type="hidden" name="id" value="<?= $edit_ev['id'] ?>"><?php endif; ?>

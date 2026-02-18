@@ -100,7 +100,7 @@ while ($pl = $partylists->fetch_assoc()) { $pl_options[] = $pl; }
         <h1 class="topbar-title">Candidates</h1>
     </div>
     <div class="topbar-right">
-        <a href="candidates.php?action=add" class="btn btn-gold">➕ Add Candidate</a>
+        <a href="candidates.php?action=add" class="btn btn-gold">Add Candidate</a>
     </div>
 </header>
 

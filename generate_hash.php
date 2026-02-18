@@ -1,24 +1,8 @@
 <?php
-/**
- * Password Hash Generator
- * Use this script to generate secure password hashes for database insertion
- * 
- * Usage: Run this file in your browser or via command line
- * Example: php generate_hash.php
- */
-
-// Function to generate password hash
+// !! To be only used for setting up admin password in DB !!
 function generatePasswordHash($password) {
     return password_hash($password, PASSWORD_DEFAULT);
 }
-
-// Example passwords and their hashes
-$passwords = [
-    'admin123' => generatePasswordHash('admin123'),
-    'student123' => generatePasswordHash('student123'),
-    'candidate123' => generatePasswordHash('candidate123'),
-];
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -67,11 +51,6 @@ $passwords = [
             border-radius: 3px;
             border: 1px solid #ddd;
         }
-        .form-section {
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e5e5e5;
-        }
         input[type="text"] {
             width: 100%;
             padding: 10px;
@@ -103,19 +82,7 @@ $passwords = [
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Password Hash Generator</h1>
-        
-        <div class="note">
-            <strong>Note:</strong> These are the default password hashes for the sample users in the database setup.
-        </div>
-
-        <h2>Pre-generated Hashes:</h2>
-        <?php foreach ($passwords as $password => $hash): ?>
-            <div class="hash-item">
-                <div class="password">Password: <?php echo htmlspecialchars($password); ?></div>
-                <div class="hash"><?php echo htmlspecialchars($hash); ?></div>
-            </div>
-        <?php endforeach; ?>
+        <h1>Hash Generator (For Admin Password Only)</h1>
 
         <div class="form-section">
             <h2>Generate Custom Hash:</h2>
@@ -139,10 +106,6 @@ $passwords = [
                 echo '</div>';
             }
             ?>
-        </div>
-
-        <div class="note" style="margin-top: 30px;">
-            <strong>Security Reminder:</strong> Never store passwords in plain text. Always use password_hash() and password_verify() functions.
         </div>
     </div>
 </body>

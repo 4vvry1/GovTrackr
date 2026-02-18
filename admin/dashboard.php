@@ -31,7 +31,7 @@ $recent_users = $conn->query("SELECT first_name, last_name, student_number, crea
     </div>
     <div class="topbar-right">
         <div class="user-chip">
-            <span class="user-avatar-icon">👤</span>
+            <span class="user-avatar-icon"></span>
             <div class="user-chip-info">
                 <strong><?= htmlspecialchars($_SESSION['user_name']) ?></strong>
                 <small>HAU COMELEC</small>
@@ -48,7 +48,7 @@ $recent_users = $conn->query("SELECT first_name, last_name, student_number, crea
         <div class="stat-card"><div class="num"><?= $total_candidates ?></div><div class="lbl">Candidates</div></div>
         <div class="stat-card"><div class="num"><?= $total_votes ?></div><div class="lbl">Votes Cast</div></div>
         <div class="stat-card">
-            <div class="num" style="font-size:1.1rem; padding-top:8px;"><?= $election_open ? '🟢 OPEN' : '🔴 CLOSED' ?></div>
+            <div class="num" style="font-size:1.1rem; padding-top:8px;"><?= $election_open ? 'OPEN' : 'CLOSED' ?></div>
             <div class="lbl">Mock Election</div>
         </div>
     </div>
@@ -56,17 +56,17 @@ $recent_users = $conn->query("SELECT first_name, last_name, student_number, crea
     <!-- Quick actions -->
     <div class="grid-2" style="align-items:start;">
         <div class="card">
-            <h3 class="card-title">⚡ Quick Actions</h3>
+            <h3 class="card-title">Quick Actions</h3>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <a href="candidates.php?action=add" class="btn btn-purple">➕ Add Candidate</a>
-                <a href="partylists.php?action=add" class="btn btn-purple">➕ Add Partylist</a>
-                <a href="events.php?action=add"     class="btn btn-purple">📅 Add Event</a>
-                <a href="election.php"              class="btn btn-gold">🗳️ Election Control</a>
+                <a href="candidates.php?action=add" class="btn btn-purple">Add Candidate</a>
+                <a href="partylists.php?action=add" class="btn btn-purple">Add Partylist</a>
+                <a href="events.php?action=add"     class="btn btn-purple">Add Event</a>
+                <a href="election.php"              class="btn btn-gold">Election Control</a>
             </div>
         </div>
 
         <div class="card">
-            <h3 class="card-title">🎓 Recent Registrations</h3>
+            <h3 class="card-title">Recent Registrations</h3>
             <div style="overflow-x:auto;">
                 <table class="data-table">
                     <thead><tr><th>Name</th><th>Student #</th><th>Date</th></tr></thead>

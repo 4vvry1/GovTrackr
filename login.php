@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GovTrackr — Sign In</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="auth-body auth-page">
 
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>Official HAU COMELEC Candidate Tracking System.</p>
         <ul class="auth-features">
             <li>Mock Election</li>
-            <li>Real-time Results</li>
+            <li>Real-time Results</li>  
             <li>Election Calendar</li>
             <li>Candidate Profiles</li>
         </ul>
@@ -78,14 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="POST" action="">
             <div class="form-group">
                 <div class="input-wrap">
-                    <span class="icon">🎓</span>
                     <input type="text" name="student_number" placeholder="Student Number"
                            value="<?= htmlspecialchars($_POST['student_number'] ?? '') ?>" required autofocus>
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-wrap">
-                    <span class="icon">🔒</span>
                     <input type="password" name="password" placeholder="Password" required>
                 </div>
             </div>

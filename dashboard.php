@@ -49,7 +49,7 @@ $voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = {$_SESSI
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GovTrackr — Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="dash-body">
 
@@ -81,7 +81,7 @@ $voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = {$_SESSI
                 <div class="lbl">Upcoming Events</div>
             </div>
             <div class="stat-card">
-                <div class="num" style="font-size:1.2rem; padding-top:6px"><?= $election_open ? '🟢 OPEN' : '🔴 CLOSED' ?></div>
+                <div class="num" style="font-size:1.2rem; padding-top:6px"><?= $election_open ? 'OPEN' : 'CLOSED' ?></div>
                 <div class="lbl">Mock Election</div>
             </div>
         </div>
@@ -92,7 +92,7 @@ $voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = {$_SESSI
             <div>
                 <p style="font-size:.8rem; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:#856404;">Next Election Day</p>
                 <p style="font-size:1.5rem; font-weight:900; color:var(--purple-dark);">
-                    📅 <?= date('F j, Y', strtotime($haulalan['event_date'])) ?>
+                     <?= date('F j, Y', strtotime($haulalan['event_date'])) ?>
                 </p>
             </div>
             <?php
@@ -122,7 +122,7 @@ $voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = {$_SESSI
                         <?php if ($c['photo']): ?>
                             <img src="<?= htmlspecialchars($c['photo']) ?>" alt="<?= htmlspecialchars($c['full_name']) ?>" class="mc-photo">
                         <?php else: ?>
-                            <div class="mc-photo">👤</div>
+                            <div class="mc-photo"></div>
                         <?php endif; ?>
                         <span class="mc-name"><?= htmlspecialchars($c['full_name']) ?></span>
                     </a>
@@ -172,7 +172,7 @@ $voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = {$_SESSI
 
                 <!-- Upcoming events -->
                 <div class="card card-dark">
-                    <h3 class="card-title">📅 Calendar of Events</h3>
+                    <h3 class="card-title"> Calendar of Events</h3>
                     <?php while ($ev = $events->fetch_assoc()): ?>
                     <div class="event-item">
                         <div class="event-date-box">
@@ -182,13 +182,13 @@ $voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = {$_SESSI
                         <div class="event-info">
                             <div class="etitle"><?= htmlspecialchars($ev['title']) ?></div>
                             <?php if ($ev['location']): ?>
-                            <div class="eloc">📍 <?= htmlspecialchars($ev['location']) ?></div>
+                            <div class="eloc"> <?= htmlspecialchars($ev['location']) ?></div>
                             <?php endif; ?>
                         </div>
                     </div>
                     <?php endwhile; ?>
                     <a href="mock_election.php" class="btn btn-gold btn-full" style="margin-top:16px">
-                        🗳️ Go to Mock Election
+                        Go to Mock Election
                     </a>
                 </div>
 

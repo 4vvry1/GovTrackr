@@ -104,11 +104,11 @@ $events    = $conn->query("SELECT * FROM events ORDER BY event_date ASC");
                         <td style="font-size:.85rem;color:var(--muted);"><?= htmlspecialchars($ev['location'] ?? '—') ?></td>
                         <td>
                             <div style="display:flex;gap:6px;">
-                                <a href="events.php?edit=<?= $ev['id'] ?>" class="btn btn-outline btn-sm">EDIT</a>
+                                <a href="events.php?edit=<?= $ev['id'] ?>" class="btn btn-outline btn-sm">Edit</a>
                                 <form method="POST" style="display:inline;" onsubmit="return confirm('Delete event?')">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= $ev['id'] ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">DELETE</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </div>
                         </td>

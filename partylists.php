@@ -6,6 +6,8 @@ if (!isset($_SESSION['user_id'])) { header("Location: login.php"); exit(); }
 $activePage = 'partylists';
 $pageTitle  = 'Partylists';
 
+
+$conn = getDatabaseConnection();
 $partylists = $conn->query("SELECT * FROM partylists ORDER BY name");
 ?>
 <!DOCTYPE html>

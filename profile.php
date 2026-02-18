@@ -9,6 +9,7 @@ $pageTitle  = 'My Profile';
 $message    = '';
 $msg_type   = '';
 
+$conn = getDatabaseConnection();
 // Load current user data
 $user = $conn->query("SELECT * FROM users WHERE id = $user_id")->fetch_assoc();
 
@@ -73,7 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GovTrackr — Profile</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="dash-body">
 
@@ -127,7 +128,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="form-group">
                         <label class="form-label">Student Number</label>
                         <div class="input-wrap" style="opacity:.7;">
-                            <span class="icon">🎓</span>
                             <input type="text" value="<?= htmlspecialchars($user['student_number']) ?>" disabled>
                         </div>
                     </div>
@@ -195,6 +195,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <a href="partylists.php"   class="btn btn-outline">View Partylists</a>
                     </div>
                 </div>
+
+                <div class="card">
+                <h3 class="card-title">About GovTrackr</h3>
+                <p style="font-size:.9rem; line-height:1.7; color:var(--muted);">
+                    GovTrackr is the Official HAU COMELEC Candidate Tracking System for Holy Angel University.
+                    It allows students to view candidates, explore party platforms, participate in mock elections,
+                    and stay updated on election schedules.
+                </p>
+                <hr style="border:none; border-top:1px solid var(--border); margin:16px 0;">
+                <p style="font-size:.82rem; color:var(--muted);">Version 1.0.0 · HAU COMELEC</p>
+                <a href="logout.php" class="btn btn-danger btn-full" style="margin-top:14px;"
+                   onclick="return confirm('Are you sure you want to log out?')">
+                    Sign Out
+                </a>
+            </div>
             </div>
         </div>
 

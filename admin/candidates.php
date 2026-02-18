@@ -113,7 +113,7 @@ while ($pl = $partylists->fetch_assoc()) { $pl_options[] = $pl; }
     <?php if ($show_form): ?>
     <!-- ── ADD / EDIT FORM ── -->
     <div class="card" style="max-width:700px;">
-        <h3 class="card-title"><?= $edit_cand ? '✏️ Edit Candidate' : '➕ Add New Candidate' ?></h3>
+        <h3 class="card-title"><?= $edit_cand ? 'Edit Candidate' : 'Add New Candidate' ?></h3>
         <form method="POST" action="" enctype="multipart/form-data">
             <input type="hidden" name="action" value="<?= $edit_cand ? 'edit' : 'add' ?>">
             <?php if ($edit_cand): ?>
@@ -226,11 +226,11 @@ while ($pl = $partylists->fetch_assoc()) { $pl_options[] = $pl; }
                         <td style="font-size:.82rem;color:var(--muted);"><?= htmlspecialchars($c['course'] ?? '—') ?></td>
                         <td>
                             <div style="display:flex;gap:6px;">
-                                <a href="candidates.php?edit=<?= $c['id'] ?>" class="btn btn-outline btn-sm">✏️ Edit</a>
+                                <a href="candidates.php?edit=<?= $c['id'] ?>" class="btn btn-outline btn-sm">Edit</a>
                                 <form method="POST" action="" style="display:inline;" onsubmit="return confirm('Delete this candidate?')">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id"     value="<?= $c['id'] ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm">🗑️</button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </div>
                         </td>

@@ -11,6 +11,8 @@ $pageTitle  = 'Mock Election';
 $message    = '';
 $msg_type   = '';
 
+$conn = getDatabaseConnection();
+
 // Check if election is open
 $settings = $conn->query("SELECT * FROM election_settings LIMIT 1")->fetch_assoc();
 $is_open  = (bool)($settings['is_open'] ?? false);

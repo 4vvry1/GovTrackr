@@ -118,7 +118,7 @@ $partylists = $conn->query("SELECT p.*, COUNT(c.id) AS member_count FROM partyli
                                 <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this partylist?')">
                                     <input type="hidden" name="action" value="delete">
                                     <input type="hidden" name="id" value="<?= $pl['id'] ?>">
-                                    <button type="submit" class="btn btn-danger btn-sm"></button>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                 </form>
                             </div>
                         </td>

@@ -118,7 +118,7 @@ while ($r = $results->fetch_assoc()) { $results_by_pos[$r['position']][] = $r; }
                 <?php $max = $candidates[0]['vote_count'] ?: 1; ?>
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
                     <div style="width:32px;text-align:center;font-weight:700;color:<?= $i === 0 ? 'var(--gold-dark)' : 'var(--muted)' ?>">
-                        <?= $i === 0 ? '🥇' : ($i + 1) . '.' ?>
+                        <?= $i === 0 ? '1.' : ($i + 1) . '.' ?>
                     </div>
                     <div style="flex:1;">
                         <div style="font-size:.88rem;font-weight:600;"><?= htmlspecialchars($c['full_name']) ?></div>

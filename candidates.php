@@ -6,6 +6,8 @@ if (!isset($_SESSION['user_id'])) { header("Location: login.php"); exit(); }
 $activePage = 'candidates';
 $pageTitle  = 'Candidates';
 
+$conn = getDatabaseConnection();
+
 // Single candidate view
 if (isset($_GET['id'])) {
     $id   = (int)$_GET['id'];
@@ -61,7 +63,7 @@ $positions = $conn->query("SELECT DISTINCT position FROM candidates ORDER BY pos
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GovTrackr — Candidates</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body class="dash-body">
 

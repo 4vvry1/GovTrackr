@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'includes/positions.php';
 if (!isset($_SESSION['user_id'])) { header("Location: login.php"); exit(); }
 
 $user_id    = $_SESSION['user_id'];
@@ -101,6 +102,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div>
                 <div class="profile-name"><?= htmlspecialchars($user['first_name'] . ' ' . $user['last_name']) ?></div>
                 <div class="profile-sn">Student No. <?= htmlspecialchars($user['student_number']) ?></div>
+                <?php if (!empty($user['college'])): ?>
+                <div style="font-size:.85rem; opacity:.8; margin-top:3px;">
+                    <?= htmlspecialchars(college_full($user['college']) ?? $user['college']) ?>
+                    <span style="background:var(--gold);color:#1A0A0F;border-radius:20px;padding:1px 10px;font-size:.75rem;font-weight:700;margin-left:6px;">
+                        <?= htmlspecialchars($user['college']) ?>
+                    </span>
+                </div>
+                <?php endif; ?>
                 <span class="profile-role"><?= ucfirst($user['role']) ?></span>
             </div>
         </div>
@@ -178,6 +187,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <span style="opacity:.8; font-size:.9rem;">Lineup Saved</span>
                             <span class="badge <?= $lineup_count ? 'badge-green' : 'badge-gold' ?>">
                                 <?= $lineup_count ? "$lineup_count picks saved" : 'No lineup yet' ?>
+                            </span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,.1);">
+                            <span style="opacity:.8; font-size:.9rem;">College</span>
+                            <span style="color:var(--gold); font-weight:700;">
+                                <?= !empty($user['college']) ? htmlspecialchars($user['college']) : '—' ?>
                             </span>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">

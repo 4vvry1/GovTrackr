@@ -1,8 +1,11 @@
 <?php
 $pageTitle = $pageTitle ?? 'GovTrackr';
 $userName  = $_SESSION['user_name'] ?? 'Student';
-$userId    = $_SESSION['student_number']   ?? '';
+$userId    = $_SESSION['student_number'] ?? '';
 $userPic   = $_SESSION['profile_pic'] ?? '';
+// Get initials for avatar fallback
+$parts    = explode(' ', trim($userName));
+$initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($parts[1], 0, 1) : ''));
 ?>
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +26,7 @@ $userPic   = $_SESSION['profile_pic'] ?? '';
             <?php if ($userPic): ?>
                 <img src="<?= htmlspecialchars($userPic) ?>" alt="avatar" class="user-avatar-img">
             <?php else: ?>
-                <span class="user-avatar-icon">👤</span>
+                <div class="user-avatar-icon"><?= $initials ?></div>
             <?php endif; ?>
             <div class="user-chip-info">
                 <strong><?= htmlspecialchars($userName) ?></strong>

@@ -45,21 +45,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GovTrackr — Sign In</title>
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Kodchasan:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body class="auth-body auth-page">
 
 <div class="auth-card">
     <div class="auth-left">
+        <div class="hau-logo">
+            <img src="https://www.hau.edu.ph/images/logo-circle.png" alt="HAU Logo">
+        </div>
         <div>
             <h1>Welcome to<br><span class="brand-gov">Gov</span><span style="color:#fff">Trackr</span></h1>
         </div>
         <p>Official HAU COMELEC Candidate Tracking System.</p>
-        <ul class="auth-features">
-            <li>Mock Election</li>
-            <li>Real-time Results</li>
-            <li>Election Calendar</li>
-            <li>Candidate Profiles</li>
-        </ul>
     </div>
 
     <div class="auth-right">
@@ -76,14 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" action="">
             <div class="form-group">
-                <label class="form-label">Student Number</label>
+                <label class="form-label">STUDENT NUMBER</label>
                 <div class="input-wrap">
                     <input type="text" name="student_number" placeholder="e.g. 20626727"
                            value="<?= htmlspecialchars($_POST['student_number'] ?? '') ?>" required autofocus>
                 </div>
             </div>
             <div class="form-group">
-                <label class="form-label">Password</label>
+                <label class="form-label">PASSWORD</label>
                 <div class="input-wrap">
                     <input type="password" name="password" placeholder="Default: your Student ID" required>
                 </div>

@@ -16,7 +16,9 @@ $active = $activePage ?? '';
 </head>
 <aside class="sidebar">
     <div class="sidebar-brand">
-        <span class="brand-gov">G</span><span class="brand-trackr">T</span>
+        <div class="hau-logo">
+            <img src="https://www.hau.edu.ph/images/logo-circle.png" alt="HAU Logo">
+        </div>
     </div>
     <nav class="sidebar-nav">
         <?php foreach ($admin_pages as $key => $p): ?>

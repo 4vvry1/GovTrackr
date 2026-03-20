@@ -8,17 +8,12 @@ if (isset($_SESSION['user_id'])) {
     exit();
 }
 
-
-// Database configuration
 $conn = getDatabaseConnection();
-
-// Initialize variables
 $error = '';
 
-// Check form request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sn  = trim($_POST['student_number'] ?? '');
-    $pw  = $_POST['password'] ?? '';    
+    $sn = trim($_POST['student_number'] ?? '');
+    $pw = $_POST['password'] ?? '';
 
     if (!$sn || !$pw) {
         $error = "Please fill in all fields.";
@@ -61,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p>Official HAU COMELEC Candidate Tracking System.</p>
         <ul class="auth-features">
             <li>Mock Election</li>
-            <li>Real-time Results</li>  
+            <li>Real-time Results</li>
             <li>Election Calendar</li>
             <li>Candidate Profiles</li>
         </ul>
@@ -69,7 +64,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="auth-right">
         <h2>Sign In</h2>
-        <p class="sub">Enter your details to proceed</p>
+        <p class="sub">Enter your student credentials to proceed</p>
+
+        <div class="auth-notice">
+            Your default password is your <strong>Student ID number</strong>. You can change it after logging in via your Profile.
+        </div>
 
         <?php if ($error): ?>
             <div class="alert alert-error"><?= htmlspecialchars($error) ?></div>
@@ -77,20 +76,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="POST" action="">
             <div class="form-group">
+                <label class="form-label">Student Number</label>
                 <div class="input-wrap">
-                    <input type="text" name="student_number" placeholder="Student Number"
+                    <input type="text" name="student_number" placeholder="e.g. 20626727"
                            value="<?= htmlspecialchars($_POST['student_number'] ?? '') ?>" required autofocus>
                 </div>
             </div>
             <div class="form-group">
+                <label class="form-label">Password</label>
                 <div class="input-wrap">
-                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="password" name="password" placeholder="Default: your Student ID" required>
                 </div>
             </div>
             <button type="submit" class="btn btn-gold btn-full">Sign In</button>
         </form>
 
-        <p class="auth-link">Don't have an account? <a href="register.php">Create one!</a></p>
+        <p style="text-align:center; font-size:0.8rem; color:var(--muted); margin-top:20px;">
+            HAU COMELEC · Holy Angel University
+        </p>
     </div>
 </div>
 

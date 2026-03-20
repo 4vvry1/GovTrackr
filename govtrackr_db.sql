@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS election_settings (
 INSERT INTO users (student_number, first_name, last_name, password, role, college)
 VALUES ('00000000', 'HAU', 'COMELEC',
         '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', NULL);
-
+        -- Default Password: 'password'
 -- Initial Events --
 INSERT INTO events (title, description, event_date, event_time, location) VALUES
     ('Filing of COC',              'Deadline for filing Certificates of Candidacy', '2026-02-20', '08:00:00', 'COMELEC Office, Admin Building'),

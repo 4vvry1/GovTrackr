@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once 'config.php';
+require_once 'includes/positions.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
     header("Location: login.php"); exit();
 }
@@ -42,24 +43,46 @@ $already_voted = $conn->query("SELECT COUNT(*) AS n FROM votes WHERE voter_id = 
 // ── HANDLE LINEUP SAVE ──────────────────────────────────────
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_lineup'])) {
     $conn->query("DELETE FROM lineups WHERE user_id = $user_id");
+    $errors = [];
+
     if (!empty($_POST['picks'])) {
-        $ins = $conn->prepare("INSERT INTO lineups (user_id, candidate_id, position, college) VALUES (?,?,?,?)");
-        foreach ($_POST['picks'] as $slot_key => $cand_id) {
-            $cand_id = (int)$cand_id;
-            // slot_key format: "position||college" (college may be empty for university-wide)
+        $ins = $conn->prepare("INSERT IGNORE INTO lineups (user_id, candidate_id, position, college) VALUES (?,?,?,?)");
+
+        foreach ($_POST['picks'] as $slot_key => $val) {
             [$position, $college] = array_pad(explode('||', $slot_key, 2), 2, null);
             $college  = $college ?: null;
-            $position = $conn->real_escape_string($position);
+            $limit    = POSITION_LIMITS[$position] ?? 1;
+            $pos_safe = $conn->real_escape_string($position);
             $col_safe = $college ? $conn->real_escape_string($college) : null;
-            $chk_sql  = "SELECT id FROM candidates WHERE id=$cand_id AND position='$position'"
-                      . ($col_safe ? " AND college='$col_safe'" : " AND (college IS NULL OR college='')");
-            $chk = $conn->query($chk_sql);
-            if ($chk->num_rows > 0) {
-                $ins->bind_param("iiss", $user_id, $cand_id, $position, $college);
-                $ins->execute();
+            $where_col = $col_safe
+                ? "AND college='$col_safe'"
+                : "AND (college IS NULL OR college='')";
+
+            // Normalize: single pick comes as scalar, multi as array
+            $picks = is_array($val) ? $val : [$val];
+
+            // Enforce max limit
+            if (count($picks) > $limit) {
+                $errors[] = "You can only pick up to $limit candidate(s) for $position.";
+                continue;
+            }
+
+            foreach ($picks as $cand_id) {
+                $cand_id = (int)$cand_id;
+                $chk = $conn->query("SELECT id FROM candidates WHERE id=$cand_id AND position='$pos_safe' $where_col");
+                if ($chk->num_rows > 0) {
+                    $ins->bind_param("iiss", $user_id, $cand_id, $position, $college);
+                    $ins->execute();
+                }
             }
         }
         $ins->close();
+    }
+
+    if ($errors) {
+        $message  = implode(' ', $errors);
+        $msg_type = 'error';
+    } else {
         $message  = "Lineup saved! Review your choices below before casting your vote.";
         $msg_type = 'success';
     }
@@ -85,7 +108,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cast_vote']) && $is_o
 }
 
 // ── LOAD POSITIONS & CANDIDATES ────────────────────────────
-require_once 'includes/positions.php';
 
 // Get the logged-in student's college (stored as abbreviation e.g. 'SOC')
 $student_row    = $conn->query("SELECT college FROM users WHERE id = $user_id")->fetch_assoc();
@@ -117,12 +139,12 @@ while ($r = $positions_res->fetch_assoc()) {
     $positions_map[$r['position']][] = $r['college'];
 }
 
-// Load user's saved lineup
+// Load user's saved lineup (multi-pick aware: key => array of candidate ids)
 $saved_lineup = [];
 $sl = $conn->query("SELECT candidate_id, position, college FROM lineups WHERE user_id = $user_id");
 while ($r = $sl->fetch_assoc()) {
     $key = $r['position'] . '||' . ($r['college'] ?? '');
-    $saved_lineup[$key] = (int)$r['candidate_id'];
+    $saved_lineup[$key][] = (int)$r['candidate_id'];
 }
 
 // Load votes cast (for confirmation screen)
@@ -137,7 +159,7 @@ if ($already_voted) {
     ");
     while ($r = $cv->fetch_assoc()) {
         $key = $r['position'] . '||' . ($r['college'] ?? '');
-        $cast_votes[$key] = $r;
+        $cast_votes[$key][] = $r;
     }
 }
 ?>
@@ -214,33 +236,41 @@ if ($already_voted) {
             <p style="color:var(--muted);">Here are the candidates you voted for.</p>
         </div>
         <div class="grid-2">
-            <?php foreach ($cast_votes as $slot_key => $cv): ?>
-            <div class="card" style="display:flex; align-items:center; gap:16px;">
+            <?php foreach ($cast_votes as $slot_key => $cv_list): ?>
+        <?php
+            [$cv_pos, $cv_col] = array_pad(explode('||', $slot_key, 2), 2, null);
+            $limit = POSITION_LIMITS[$cv_pos] ?? 1;
+        ?>
+        <div class="card" style="margin-bottom:4px;">
+            <p style="font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--maroon);margin-bottom:12px;border-bottom:2px solid var(--gold);padding-bottom:6px;">
+                <?= htmlspecialchars($cv_pos) ?>
+                <?php if ($cv_col): ?><span style="font-weight:400;opacity:.7;"> — <?= htmlspecialchars($cv_col) ?></span><?php endif; ?>
+                <?php if ($limit > 1): ?><span style="color:var(--muted);font-weight:400;"> (<?= count($cv_list) ?>/<?= $limit ?>)</span><?php endif; ?>
+            </p>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+            <?php foreach ($cv_list as $cv): ?>
+            <div style="display:flex;align-items:center;gap:14px;">
                 <?php if ($cv['photo']): ?>
-                    <img src="<?= htmlspecialchars($cv['photo']) ?>" style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);">
+                    <img src="<?= htmlspecialchars($cv['photo']) ?>" style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);">
                 <?php else: ?>
-                    <div style="width:56px;height:56px;border-radius:50%;background:var(--purple-soft);display:flex;align-items:center;justify-content:center;font-size:1.6rem;border:3px solid var(--gold);">👤</div>
+                    <div style="width:48px;height:48px;border-radius:50%;background:var(--maroon-soft);display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:2px solid var(--gold);color:var(--maroon);">👤</div>
                 <?php endif; ?>
                 <div>
-                    <p style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);">
-                        <?= htmlspecialchars($cv['position']) ?>
-                        <?php if (!empty($cv['college'])): ?>
-                        <span style="font-weight:400;opacity:.7;"> — <?= htmlspecialchars($cv['college']) ?></span>
-                        <?php endif; ?>
-                    </p>
-                    <p style="font-weight:700;"><?= htmlspecialchars($cv['full_name']) ?></p>
-                    <?php if ($cv['partylist']): ?>
-                    <span class="party-badge"><?= htmlspecialchars($cv['partylist']) ?></span>
-                    <?php endif; ?>
+                    <p style="font-weight:700;font-size:.9rem;"><?= htmlspecialchars($cv['full_name']) ?></p>
+                    <?php if ($cv['partylist']): ?><span class="party-badge"><?= htmlspecialchars($cv['partylist']) ?></span><?php endif; ?>
                 </div>
             </div>
             <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endforeach; ?>
         </div>
 
         <?php else: ?>
         <!-- College scope notice -->
         <?php if ($student_college): ?>
         <div class="card" style="padding:14px 20px; display:flex; align-items:center; gap:14px; border-left:4px solid var(--gold);">
+            <div style="font-size:1.6rem;">🏫</div>
             <div>
                 <p style="font-size:.82rem; font-weight:700; color:var(--purple-dark); margin-bottom:2px;">
                     Your Voting Scope
@@ -289,11 +319,32 @@ if ($already_voted) {
                 $saved_pick = $saved_lineup[$slot_key] ?? 0;
                 ?>
 
+                <?php
+                $limit      = POSITION_LIMITS[$pos] ?? 1;
+                $is_multi   = $limit > 1;
+                $saved_pick = $saved_lineup[$slot_key] ?? [];  // always array now
+                $input_name = $is_multi
+                    ? 'picks[' . htmlspecialchars($slot_key) . '][]'
+                    : 'picks[' . htmlspecialchars($slot_key) . ']';
+                ?>
+                <?php if ($is_multi): ?>
+                <p style="font-size:.72rem;color:var(--muted);margin-bottom:8px;font-weight:600;">
+                    Choose up to <strong><?= $limit ?></strong> — selected:
+                    <span data-slot-counter="<?= htmlspecialchars($slot_key) ?>">
+                        <?= count((array)$saved_pick) ?>
+                    </span>
+                </p>
+                <?php endif; ?>
+
                 <?php while ($cand = $cands_for_slot->fetch_assoc()): ?>
+                <?php $is_checked = in_array((int)$cand['id'], (array)$saved_pick); ?>
                 <label>
-                    <div class="vote-candidate-card <?= $saved_pick === (int)$cand['id'] ? 'picked' : '' ?>"
-                         id="vc-<?= htmlspecialchars($slot_key) ?>-<?= $cand['id'] ?>">
-                        <?php if ($cand['photo']): ?>
+                    <div class="vote-candidate-card <?= $is_checked ? 'picked' : '' ?>"
+                         id="vc-<?= md5($slot_key) ?>-<?= $cand['id'] ?>"
+                         data-slot="<?= htmlspecialchars($slot_key) ?>"
+                         data-limit="<?= $limit ?>"
+                         data-multi="<?= $is_multi ? '1' : '0' ?>">
+                        <?php if ($cand['photo'] && $cand['photo'] !== '0'): ?>
                             <img src="<?= htmlspecialchars($cand['photo']) ?>" alt="" class="vc-photo">
                         <?php else: ?>
                             <div class="vc-photo">👤</div>
@@ -304,17 +355,23 @@ if ($already_voted) {
                             <div class="vc-party"><?= htmlspecialchars($cand['partylist']) ?></div>
                             <?php endif; ?>
                             <?php if ($cand['college']): ?>
-                            <div class="vc-party" style="color:var(--gold-dark); font-weight:600;">
-                                <?= htmlspecialchars($cand['college']) ?>
-                            </div>
+                            <div class="vc-party" style="color:var(--gold-dark);font-weight:600;"><?= htmlspecialchars($cand['college']) ?></div>
                             <?php endif; ?>
                         </div>
                         <div class="vc-pick-dot"></div>
-                        <input type="radio"
-                               name="picks[<?= htmlspecialchars($slot_key) ?>]"
+                        <?php if ($is_multi): ?>
+                        <input type="checkbox"
+                               name="<?= $input_name ?>"
                                value="<?= $cand['id'] ?>"
                                style="display:none"
-                               <?= $saved_pick === (int)$cand['id'] ? 'checked' : '' ?>>
+                               <?= $is_checked ? 'checked' : '' ?>>
+                        <?php else: ?>
+                        <input type="radio"
+                               name="<?= $input_name ?>"
+                               value="<?= $cand['id'] ?>"
+                               style="display:none"
+                               <?= $is_checked ? 'checked' : '' ?>>
+                        <?php endif; ?>
                     </div>
                 </label>
                 <?php endwhile; ?>
@@ -341,16 +398,64 @@ if ($already_voted) {
 </div>
 
 <script>
+// Update pick counter display
+function updateCount(slotKey) {
+    const checked = document.querySelectorAll(`input[type=checkbox][name="picks[${slotKey}][]"]:checked`).length;
+    document.querySelectorAll(`.pick-count-${CSS.escape(btoa(slotKey).replace(/=/g,''))}`)
+        .forEach(el => el.textContent = checked);
+    // fallback using data attribute
+    const counters = document.querySelectorAll('[data-slot-counter="' + slotKey + '"]');
+    counters.forEach(el => el.textContent = checked);
+}
+
 document.querySelectorAll('.vote-candidate-card').forEach(card => {
-    card.addEventListener('click', () => {
-        const radio = card.querySelector('input[type=radio]');
-        const name  = radio.name;
-        document.querySelectorAll(`input[name="${name}"]`).forEach(r => {
-            r.closest('.vote-candidate-card').classList.remove('picked');
-        });
-        card.classList.add('picked');
+    card.addEventListener('click', (e) => {
+        // Prevent the label from double-toggling the checkbox/radio
+        e.preventDefault();
+
+        const input   = card.querySelector('input');
+        const isMulti = card.dataset.multi === '1';
+        const limit   = parseInt(card.dataset.limit) || 1;
+        const slot    = card.dataset.slot;
+
+        if (isMulti) {
+            // CHECKBOX logic with limit enforcement
+            const allInGroup   = document.querySelectorAll(`.vote-candidate-card[data-slot="${CSS.escape(slot)}"]`);
+            const checkedCount = [...allInGroup].filter(c => c.classList.contains('picked')).length;
+
+            if (card.classList.contains('picked')) {
+                // Deselect
+                card.classList.remove('picked');
+                input.checked = false;
+            } else {
+                if (checkedCount < limit) {
+                    card.classList.add('picked');
+                    input.checked = true;
+                } else {
+                    // At limit — flash red border
+                    card.style.borderColor = 'var(--danger)';
+                    setTimeout(() => card.style.borderColor = '', 700);
+                    return;
+                }
+            }
+            // Update counter
+            const newCount = [...allInGroup].filter(c => c.classList.contains('picked')).length;
+            const counter  = document.querySelector(`[data-slot-counter="${slot}"]`);
+            if (counter) counter.textContent = newCount;
+
+        } else {
+            // RADIO logic — deselect all siblings first
+            document.querySelectorAll(`.vote-candidate-card[data-slot="${CSS.escape(slot)}"]`).forEach(c => {
+                c.classList.remove('picked');
+                c.querySelector('input').checked = false;
+            });
+            card.classList.add('picked');
+            input.checked = true;
+        }
     });
 });
+
+// Init counters on page load — already set by PHP for saved lineups
 </script>
 </body>
 </html>

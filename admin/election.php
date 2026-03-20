@@ -1,5 +1,6 @@
 <?php
 require_once 'auth_guard.php';
+require_once '../includes/positions.php';
 $activePage = 'election';
 $message = ''; $msg_type = '';
 
@@ -44,7 +45,6 @@ if ($auto_mode) {
     $has_ended   = false;
 }
 
-require_once '../includes/positions.php';
 $field_expr = position_field_expr('c.position');
 
 // Results by position+college
@@ -178,23 +178,53 @@ while ($r = $results->fetch_assoc()) {
         <!-- Live results -->
         <div class="card">
             <h3 class="card-title">Live Results</h3>
-            <?php foreach ($results_by_pos as $pos => $candidates): ?>
-            <div class="position-section" style="margin-bottom:20px;">
-                <div class="position-label"><?= htmlspecialchars($pos) ?></div>
+            <p style="font-size:.75rem;color:var(--muted);margin-bottom:16px;">
+                🏆 <strong style="color:var(--gold-dark);">Gold</strong> = projected winner based on position limit
+            </p>
+            <?php foreach ($results_by_pos as $pos_label => $candidates): ?>
+            <?php
+            $base_pos = trim(explode(' — ', $pos_label)[0]);
+            $win_slots = POSITION_LIMITS[$base_pos] ?? 1;
+            $max_votes = $candidates[0]['vote_count'] ?? 0;
+            ?>
+            <div class="position-section" style="margin-bottom:24px;">
+                <div class="position-label" style="display:flex;justify-content:space-between;align-items:center;">
+                    <span><?= htmlspecialchars($pos_label) ?></span>
+                    <span style="font-size:.68rem;font-weight:600;color:var(--gold-dark);background:var(--gold-light);padding:2px 8px;border-radius:10px;">
+                        Top <?= $win_slots ?> win<?= $win_slots > 1 ? 's' : '' ?>
+                    </span>
+                </div>
                 <?php foreach ($candidates as $i => $c): ?>
-                <?php $max = $candidates[0]['vote_count'] ?: 1; ?>
-                <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
-                    <div style="width:32px;text-align:center;font-weight:700;color:<?= $i === 0 ? 'var(--gold-dark)' : 'var(--muted)' ?>">
-                        <?= ($i + 1) . '.' ?>
+                <?php
+                $is_winner = ($i < $win_slots) && $c['vote_count'] > 0;
+                $bar_pct   = $max_votes > 0 ? round($c['vote_count'] / $max_votes * 100) : 0;
+                ?>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;
+                            <?= $is_winner ? 'background:var(--gold-light);border-radius:8px;padding:6px 8px;border-left:3px solid var(--gold);' : 'padding:6px 8px;' ?>">
+                    <div style="width:28px;text-align:center;font-weight:800;font-size:.88rem;
+                                color:<?= $is_winner ? 'var(--gold-dark)' : 'var(--muted)' ?>;">
+                        <?= $i + 1 ?>.
                     </div>
                     <div style="flex:1;">
-                        <div style="font-size:.88rem;font-weight:600;"><?= htmlspecialchars($c['full_name']) ?></div>
-                        <div style="font-size:.75rem;color:var(--muted);"><?= htmlspecialchars($c['partylist'] ?? 'Independent') ?></div>
-                        <div style="background:var(--border);border-radius:30px;height:8px;margin-top:4px;overflow:hidden;">
-                            <div style="background:<?= $i === 0 ? 'var(--gold)' : 'var(--purple-light)' ?>;height:100%;width:<?= $max > 0 ? round($c['vote_count']/$max*100) : 0 ?>%;border-radius:30px;transition:width .5s;"></div>
+                        <div style="font-size:.88rem;font-weight:<?= $is_winner ? '800' : '600' ?>;
+                                    color:<?= $is_winner ? 'var(--maroon)' : 'var(--text)' ?>;">
+                            <?= htmlspecialchars($c['full_name']) ?>
+                            <?php if ($is_winner): ?>
+                            <span style="font-size:.65rem;background:var(--gold);color:#1A0A0F;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700;">WINNING</span>
+                            <?php endif; ?>
+                        </div>
+                        <div style="font-size:.74rem;color:var(--muted);"><?= htmlspecialchars($c['partylist'] ?? 'Independent') ?></div>
+                        <div style="background:var(--border);border-radius:30px;height:7px;margin-top:5px;overflow:hidden;">
+                            <div style="background:<?= $is_winner ? 'var(--gold)' : 'var(--maroon-mid)' ?>;
+                                        height:100%;width:<?= $bar_pct ?>%;
+                                        border-radius:30px;transition:width .5s;opacity:<?= $is_winner ? '1' : '.5' ?>;"></div>
                         </div>
                     </div>
-                    <div style="font-weight:700;color:var(--purple-dark);min-width:28px;text-align:right;"><?= $c['vote_count'] ?></div>
+                    <div style="font-weight:800;min-width:28px;text-align:right;
+                                color:<?= $is_winner ? 'var(--gold-dark)' : 'var(--muted)' ?>;
+                                font-size:<?= $is_winner ? '1rem' : '.88rem' ?>;">
+                        <?= $c['vote_count'] ?>
+                    </div>
                 </div>
                 <?php endforeach; ?>
             </div>

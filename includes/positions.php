@@ -26,6 +26,18 @@ define('POSITION_ORDER', [
     'Senator',
 ]);
 
+// Max picks allowed per position (1 = radio/single, >1 = checkbox/multi)
+define('POSITION_LIMITS', [
+    'President'              => 1,
+    'Vice-President'         => 1,
+    'Director'               => 8,
+    'University Wide Senator'=> 5,
+    'Governor'               => 1,
+    'Vice-Governor'          => 1,
+    'Councilor'              => 8,
+    'Senator'                => 1,
+]);
+
 // ── COLLEGES (full name => abbreviation) ───────────────────
 define('COLLEGES', [
     'School of Business and Accountancy'             => 'SBA',
@@ -43,6 +55,7 @@ define('COLLEGE_ABBR', array_flip(COLLEGES));
 
 /**
  * Get full college name from abbreviation.
+ * e.g. college_full('SOC') => 'School of Computing'
  */
 function college_full(string $abbr): ?string {
     return COLLEGE_ABBR[$abbr] ?? null;
@@ -50,7 +63,7 @@ function college_full(string $abbr): ?string {
 
 /**
  * Get abbreviation from full college name.
-
+ * e.g. college_abbr('School of Computing') => 'SOC'
  */
 function college_abbr(string $full): ?string {
     return COLLEGES[$full] ?? null;

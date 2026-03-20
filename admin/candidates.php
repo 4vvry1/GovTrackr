@@ -41,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($action === 'add') {
                 $stmt = $conn->prepare("INSERT INTO candidates (full_name, position, college, partylist_id, photo, bio, platform, year_level, course) VALUES (?,?,?,?,?,?,?,?,?)");
-                $stmt->bind_param("ssssissss", $full_name, $position, $college, $partylist, $photo, $bio, $platform, $year_level, $course);
+                $stmt->bind_param("sssisssss", $full_name, $position, $college, $partylist, $photo, $bio, $platform, $year_level, $course);
                 $stmt->execute();
                 $message = "Candidate added successfully."; $msg_type = 'success';
             } else {
                 $id = (int)$_POST['id'];
                 $stmt = $conn->prepare("UPDATE candidates SET full_name=?, position=?, college=?, partylist_id=?, photo=?, bio=?, platform=?, year_level=?, course=? WHERE id=?");
-                $stmt->bind_param("ssssissssi", $full_name, $position, $college, $partylist, $photo, $bio, $platform, $year_level, $course, $id);
+                $stmt->bind_param("sssisssssi", $full_name, $position, $college, $partylist, $photo, $bio, $platform, $year_level, $course, $id);
                 $stmt->execute();
                 $message = "Candidate updated."; $msg_type = 'success';
             }

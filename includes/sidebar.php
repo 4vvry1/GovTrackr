@@ -30,7 +30,7 @@ $active = $activePage ?? '';
         </a>
         <?php endforeach; ?>
     </nav>
-    <a href="/govtrackr/logout.php" class="nav-item nav-logout" title="Logout">
+    <a href="/logout.php" class="nav-item nav-logout" title="Logout">
         <span class="nav-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>

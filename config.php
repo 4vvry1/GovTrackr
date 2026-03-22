@@ -6,10 +6,11 @@
 */
 
 // Database credentials
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');          // Change if needed
-define('DB_PASS', '');              // Change if needed
-define('DB_NAME', 'govtrackr');
+define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
+define('DB_USER', getenv('MYSQLUSER') ?: 'root');
+define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
+define('DB_NAME', getenv('MYSQLDATABASE') ?: 'govtrackr');
+define('DB_PORT', getenv('MYSQLPORT') ?: 3306);
 
 // Create database connection
 function getDatabaseConnection() {

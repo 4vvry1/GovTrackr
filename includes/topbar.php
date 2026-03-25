@@ -22,7 +22,7 @@ $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($par
             <input type="text" name="search" placeholder="Search candidates..."
                    class="search-input" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
         </form>
-        <a href="/profile.php" class="user-chip">
+        <a href="<?= BASE_URL ?>/profile.php" class="user-chip">
             <?php if ($userPic): ?>
                 <img src="<?= htmlspecialchars($userPic) ?>" alt="avatar" class="user-avatar-img">
             <?php else: ?>

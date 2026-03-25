@@ -18,7 +18,7 @@ $initials = strtoupper(substr($parts[0], 0, 1) . (isset($parts[1]) ? substr($par
         <h1 class="topbar-title"><?= htmlspecialchars($pageTitle) ?></h1>
     </div>
     <div class="topbar-right">
-        <form method="GET" action="/govtrackr/candidates.php" class="search-form">
+        <form method="GET" action="<?= BASE_URL ?>/candidates.php" class="search-form">
             <input type="text" name="search" placeholder="Search candidates..."
                    class="search-input" value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
         </form>

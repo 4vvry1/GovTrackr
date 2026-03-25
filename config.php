@@ -4,6 +4,12 @@
  * GovTrackr Web Application
  
 */
+// Check environment to dynamically change href links
+if (getenv('RAILWAY_ENVIRONMENT') || getenv('MYSQLHOST')) {
+    define('BASE_URL', '');
+} else {
+    define('BASE_URL', '/govtrackr');
+}
 
 // Database credentials
 define('DB_HOST', getenv('MYSQLHOST') ?: 'localhost');
